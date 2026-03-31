@@ -68,8 +68,8 @@ HelloUE/Build/*/**
 HelloUE/Saved/*
 
 # Compiled source files for the engine to use
-Intermediate/*
-Plugins/**/Intermediate/*
+HelloUE/Intermediate/*
+HelloUE/Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
-DerivedDataCache/*
+HelloUE/DerivedDataCache/*
