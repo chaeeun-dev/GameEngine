@@ -1,0 +1,23 @@
+Flug in 다운
+USD Core, USD Importer
+
+비행기 메시 임포트
+Collision Add 26 ~
+Scale 변경 -> Bake -> 피봇 설정
+
+BP_Aircraft
+pawn details -> Use Controller Rotation 체크
+
+IA_MoveAircraft -> Axis2D
+IA_RotateAircraft -> Axis2D
+
+pitch 각도가 반대로 움직이는 문제
+controller에서 -1을곱해주는 것 말고, 
+IMC 파일의 Modifier로 수정 -> Negate Y
+
+Player Controller가 입력을 받음 -> Pawn한테 이동 명령
+
+W와 S를 매핑, S를 누를 때 Modifier -> Negate
+A와 D를 매핑하면? X를 입력받기 때문에, Modifier에 Swizzel로 Y값을 입력하도록 설정
+
+SpringArm Lag 설정
