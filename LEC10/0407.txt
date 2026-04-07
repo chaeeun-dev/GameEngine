@@ -1,0 +1,54 @@
+폭탄 만들기
+Starter Content에서 Shape_NarrowCapsule 생성 및 머테리얼 적용
+Movable로 변경, Simulate Physics 체크
+Simulation으로 실행
+
+BP_Aircraft
+폭탄이 떨어지는 곳 설치 Arrow Component - BombPoint
+비행기와 충돌되지 않기 위해 좀 떨어져서 설치함
+
+input 설정하기
+Input Action 생성 IA_FireBomb, bool
+IMC 연결 space bar
+
+입력은 Player Controller에서 받고, 각도와 위치를 변경했지만
+폭탄을 설치하는 것은 번거롭기에(위치 갖고오고 어쩌구) 입력을 Pawn에서 처리하도록
+Input을 처리하는 단계, Player Controller -> Level Blueprint -> Pawn (윗단계에서 처리하지 않으면 아래에서 처리됨)
+BP_Aircrfaft의 EventGraph에서 EnhancedInputAction IA_Firebomb 노드 추가
+started에 spawn actor from class 연결, BP_Bomb으로 설정, BombPoint -> GetWorld Transform으로 Spawn Transform 연결
+
+---
+
+Character
+Character를 상속받는 BP_Granny 생성
+Skeletal Mesh
+
+Mixamo에서 Sport Granny 캐릭터 기본 세팅으로 다운로드
+엔진에 기본 옵션으로 임포트
+* 할머니 얼굴이 깨지는데, 이건 믹사모랑 엔진의 호환성이 안 맞아서.. 수정하면 됨
+FitnessGrandma_FaceAnimMap를 M_GrannyFace(Material로 생성)에 가져와서 RGBfmf Base Color에 연결
+~ 
+캡처본 참고
+Spring Arm & Camera
+
+BP_Granny에 메쉬 넣고 위치 조정
+GameMode를 만들고 Player Controller 생성 및 설정
+IA_MoveGranny, IA_RotateGranny, IMC_GrannyControl 설정
+
+GrannyController의 EventGraph 캡처본 참고
+Yaw 회전은 되지만, Pitch 회전은 몸통이 앞뒤로 회전하는 문제 -> 카메라를 움직여야 하는 것 -> Spring Arm 선택 후 Use Pawn Control Rotation 선택
+
+비행기에서는 Controller에서 input을 받아서 WASD 이동을 했는데, 
+이번에는 Pawn에서 직접 이동시켜보자
+캡처본 참고
+
+RPG 스타일의 움직임
+BP_Granny에 Arrow(Controller Direction) 컴포넌트 추가
+Pawn의 Rotation Yaw 체크 해제
+
+캡처본 참고
+
+회전은 Controller가 먼저 -> Pawn이 할 건지는 선택
+Arrow의 방향이 Controller의 방향임
+
+Charactoer Movement -> Orient Rotation to Movement 체크
