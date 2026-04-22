@@ -1,0 +1,38 @@
+복습
+
+1. 충돌은 컴포넌트 단위 - 충돌의 타입을 지정해야 함
+2. 어떤 타입과 충돌했을 때 어떻게 반응할 것인가 -> Block, Overlap, Ignore
+3. ~
+
+---
+
+[공질 구현]
+방법
+	1. 직접적인 물리 엔진 활용
+	2. ProjectileMovementComponent 사용 <- 이거로!
+
+믹사모에서 Thorw Object 애니메이션 다운, 임포트, 몽타주에 넣고 섹션 만들기 & 섹션 연결 해제
+
+Thorw 애니메이션에서 필요 없는 부분이 있음(약 2초 정도 늦게 시작해야)
+-> 슬롯 선택하고 Start Time과 End Time을 설정하면 됨(아 나는 애니메이션 직접 노가다하면서 삭제했었는데..^^)
+
+공을 만들어보자
+- 레벨에서 Sphere로 scale 0.2f로 설정, Actor -> Merge, SM_Ball
+- Movable로 설정, BP_Ball 생성, ProjectileMovement 컴포넌트 추가, Projectile Initial Speed 500으로 설정한 후 시뮬레이션 해보면 공처럼 날아감
+- Initial velocity in Local Space -> 자신의 로컬 좌표를 기준으로 속도 영향 받음. 속도는 x 방향으로 나감. 방향을 바꾸려면 X축이 바라보는 각도를 조정하면 됨
+
+마우스 휠 버튼을 누르면 공을 던져보자
+Montage에서 소켓을 추가해서 던지는 애니메이션 중간에 볼의 각도를 조절해보자. 공의 Local Space에서 x축이 위로 가도록
+몽타주 실행 후 Notify(Release 노티파이 생성) 되면 SpawnActor하도록 
+
+Ball에서 월드 좌표계 기준으로 공이 날아가게 Initial Velocity in Local Space 해제
+
+Granny가 바라보는 방향을 ball에게 전달해야 함 -> 생성자
+BP_Ball에 InitialVelocity 변수 추가, Instance Editable, Expose on Spawn 체크 후 스폰할 때 Froward Vector와 500을 곱해서 스폰
+
+Ball의 Event Beginplay에서 PorjectileMovement -> Set Velocity
+
+손과 공이랑 충돌해서 멈춤
+-> 노티파이를 써서 충돌이 노티파이 이후에 되도록 하면 됨
+Ball의 StaticMeshComponent에서 Collision Preset Custom, Collision Enabled를 No Collision으로 설정
+(꼼수) 딜레이 후에 Collision을 복구하면 됨 Delay 후 Set collision Enabled(Collision Enabled (Query and Physics))
