@@ -1,0 +1,51 @@
+총 자료, 애니메이션 임포트, 몽타주에 애니메이션 추가, 총 소켓 추가
+Shoot에 노티파이 추가해서 사운드 재생하도록, Play Sound Notify
+
+Right Mouse 버튼을 누르면 AimingIdle 몽타주를 실행하도록 설정
+이걸 실행했을 때, 다시 Idle로 가는데, 계속 반복되도록 하고 싶음
+즉 버튼을 계속 누르고 있으면 Aiming Idle 애니메이션을 실행해야 함
+Montage Section 창에서 AmingIdle에 정지 버튼 -> 다음 섹션에 뭘 할 건지!, AimingIdle을 선택하면 도돌이표 나옴
+
+Granny의 Mesh에 Rifle 추가, 소켓과 메시 선택
+
+Left Mouse 버튼을 누르면 Shooting하도록, 근데 Aiming 상태일 때여야 함 -> bool 값으로 상태 확인 Aiming?
+우클릭하면 변수 세팅, 우클릭하면 변수 확인해서 몽타주 실행
+근데 Shooting하면 우클릭을 한태더라도 기본 Idle 상태로 돌아감 
+-> Shoot가 끝나면 AimingIdle로 돌아가도록, 몽타주 섹션에서 설정
+
+연타를 하면 블렌드인 시간 때문에 덜컥?거림. 몽타주에서 Blend Time을 0.1로 바꾸면 괜찮아짐
+
+---
+
+이제 총알 처리를 해보자
+Tick에서 Aiming?이 true이면, Line Trace By Channel
+뷰포트에서 Rifle 메쉬에 Arrow 추가(MuzzleArrow), 화살표를 총구 끝으로 위치시키기(너무 가깝지 않게)
+Line Trace의 Start는 MuzzleArrow -> Get World Location, End는 get Forward Vector에 10000을 곱하고, Get World Location과 더해서 설정
+Draw Debug Type을 For One Frame으로 설정
+
+객체 별로 트레이스 반응을 설정할 수 있음
+판자의 Collision을 확인해보자. Collision Preset을 Custom으로 바꿔보면 프리셋을 알 수 있음. Trace Responses의 Visibility가 Block으로 되어 있음. Ignore로 바꾸면 충돌 안 됨
+
+라인 트레이스 기능을 Collapse to function으로 함수로 만들어주자
+함수 Outputs에 bool 추가 Hit?, Hit Result 추가 Hit Result
+
+좌클릭하면 몽타주 실행하고, 그 뒤에 ShootRayFromMuzzle 호출하고, Hit Result를 Split함, Hit?가 true이면 Spawn Emitter되도록 
+
+***조준 모드일 때는 RPG말고, FPS 조작으로 변경해야 함!
+Granny의 Class Setting에 Panw 속성에 Use Controller Rotation Yaw를 체크해야 함
+Orient Rotation to Movement 꺼야 함
+(지금은 RPG 스타일로!!! 설정 그냥 두기)
+
+조준 모드일 때는 카메라 스피링암을 300 -> 150으로, 카메라의 위치를 변경하고 FPS 조준이 되도록 변경해야 함
+
+Right Mouse Button을 눌렀을 때 Set Use Controller Rotation Yaw를 체크, Pitch도 해주고, 마우스 입력에 따라 카메라 바꾸고 Yaw와 Pitch 설정을 바꾸도록 함
+근데 Pitch 회전을 하면 플레이어 자체가 회전을 함 -> 애니메이션으로 블렌딩 해줘야(위로 드는 애니메이션, 아래로 드는 애니메이션 등) 지금은 편법을 써서 척추가 회전하도록 해보자
+
+ABP의 AnimGraph에서 Trasform Modify Bone 노드 추가
+Details에서 bone to Modify를 Spine으로 설정
+Rotation 핀을 Split, 컨트롤러의 pitch 값을 가져와야 함. Event 그래프에서 하는 것 말고, Property Access - Get Tryp Get Pawn Owner -> Get CotrollerRotation -> Pitch
+
+RPG일 때는 회전이 안 되도록,
+ABP의 Event Graph에 Event Blueprint Initiailxe Animation 추가(Begin Play와 같다) Try Get Pawn Owner -> Cast To Granny -> Set Granny로 저장
+
+process access로 aiming을 연결해주고 곱하기한 후 Alpha 값에 연결하면 됨
