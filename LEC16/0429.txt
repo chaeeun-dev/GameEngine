@@ -1,0 +1,22 @@
+Starter Content의 Chair의 충돌을 살펴보자
+3개의 Chair
+1. Simple Collision	
+	Mesh에서 Collision -> Auto ~ 하면 정점 수 등 설정해서 만들 수 있음
+	이건 Simple Shape이다.
+
+2. View에서 Complex Shape, 이건 폴리곤과 일치함
+
+Project Setting - Default Shape Complexity -> Simple And Complex로 되어 있음. 
+엔진의 요청에 따라서 둘 중에 하나.
+설정을 Use Complex Collision As Simple로 하면, Complex로 충돌 처리
+
+*** 레벨에서 alt + c -> 충돌 영역 보기
+
+의자 Simple과 Complex를 떨어뜨려보면(Simulate Physics 체크)
+Simple은 떨어짐, Complex는 떨어지지 않음 -> 계산량이 너무 많아서 아예 막아버림
+=> Complex는 Physics Simulation이 불가능하다(물리적 운동이 불가능, 가만히 있는 건 괜찮음)
+	물리적 운동을 하려면 Simple Shape으로 설정해야 함.
+
+따라서 Simple Shape에서 수를 늘려주면 됨
+
+Line Trace By Channel은 Simple하게 처리함, Trace Complex를 설정하면 정밀하게 체크 가능
