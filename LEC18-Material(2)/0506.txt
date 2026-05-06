@@ -1,0 +1,59 @@
+단축키) 머테리얼 프리뷰에서 L 누르고 클릭 드래그 -> 광원 방향 바꿈
+
+Lerp 노드
+A와 B 사이를 Alpha만큼 선형 보간
+단축키) l키 클릭
+A 0, B 0.5 - Roughness 연결 -> 매끈
+A 0.5, B 1.0 - Roughness 연결 -> 거침
+
+--- 
+[M_ColorPlay]
+ 
+단축키) 3키 좌클릭
+
+- 색깔 요리조리 더해보기
+- 회색으로 바꾸기
+	R * 0.299, B * 0.587, B * 0.5114 후 더하기
+- Texture * Color -> Tint
+	벽돌 텍스처 * 잔디 텍스처 -> 이끼 낀 벽돌 느낌
+	- 곱하기 => Mix 하는 것임 <- 곱하면 어두워짐(숫자가 작아져서)
+	- Lerp로도 섞을 수 있음 <- Lerp는 더하는 것이라 밝아짐(숫자가 커져서)
+	=> 어둡게 섞고 싶을 떄 곱하기, 밝게 섞고 싶을 떄 Lerp
+
+---
+[M_MyGlass]
+
+유리의 Base Color: 0, 0, 0
+유리는 투명 -> Opacity(불투명) 0이면 투명한 것
+근데 Opacity를 설정할 수 없음(불투명한 것에만 설정할 수 있는 노드라서 그럼. BlendMode가 Opaque로 되어 있어서 그럼 -> TranslucentGreyTransmittance로 변경
+유리는 표면이 매끈한데, Roughness 선택을 못하게 됨. -> Translucency의 Lighting Mode를 Volumetric NonDirectional에서 Surface Trans~로 변경 
+Metallic 0, Specular 0.5, Roughness 0.1
+
+문제점 - 안에 있는 물체가 굴절되어야 함
+-> Refraction이 Disable로 되어있음. Refraction의 None을 Index of Refration으로 설정
+
+문제점 - 얇은 유리 vs 두꺼운 유리 -> 두꺼운 유리의 왜곡이 더 커야 함
+엔진은 물체의 두께에 상관 없이, 뒤에 면이 꽉 차있다고 가정하고 계산하는 것임
+=> 따라서, 얇은 유리와 두꺼운 유리에 각각 다른 머테리얼을 적용해야 함
+
+문제점 - 구에서 경계 부분의 경계가 더 심해져야 함
+바라보는 각도에 따라 굴절률이 변해야 함. 가운데 쪽은 굴절률 작고, 끝 쪽은 굴절률 큼 -> Fresnel 효과
+물을 수직에서 바라볼 땐 반사 많이 안 되고, 시선에 평행에 가까워질 수록 반사가 많이 됨
+=> 엔진의 Fresnel 노드 사용 - Exponentln 10, BaseReflectFractionln 0.001. Exponentln의 값을 통해 굴절률을 설정할 것 -> Lerp (A: 1.1 얇을 때, B: 1.52 두꺼울 때)
+
+---
+
+[M_Water]
+
+바다를 만들어보자
+
+Base Color 에메랄드 색
+BlendMode를 TranslucentGreyTransnittance로 설정, Lighting Mode를 Surface Transluency~로 설정
+Refraction Index Of Refraction으로 설정
+
+Water Normar 텍스처를 Normal에 연결 후, uv 타일링 해줘야 함. TexCoord 80, 80
+
+근데, 애니메이션이 없음! -> uv를 움직여보자
+TexCoord -> Panner
+
+제자리에서 떠다녀보이도록 하려면? 반반씩 섞기 Panner 1.0, 1.0, Panner -1.0, -1.0 후 Lerp해서 Normal에 적용
