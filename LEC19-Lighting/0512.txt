@@ -1,0 +1,95 @@
+[라이팅]
+
+라이팅 도구
+- 광원 - Point Light, Directional Light
+- 환경 - 포그, 클라우드, 애트머스피어
+- 포스트 프로세스 이펙트 - 씬의 전체적인 Look & Feel을 최종적으로 정의
+
+조명 방식 - 라이팅 결과를 계산하는 방식
+- 지역 조명(직접 조명): 광원으로부터 나오는 빛이 물체의 표면에 직접 부딪힌 것만 계산
+- 전역 조명(간접 조명): 전체적으로 반사된 빛 계산
+	미리 계산하는 게 더 품질이 좋음, 전역 조명을 미리 계산하고자 노력하고 있음 
+	-> 루멘: 실시간으로 전역 조명 계산하는 것처럼 보이는..
+
+---
+
+[실습]
+
+루멘 설정
+프로젝트 설정
+- Rendering -> Global Illumination -> Lumen, Use Hardware Ray Tracing ~ 체크
+- Shadow Map Method Virtual Shadow Maps
+- Support Hardware Ray Tracing 체크
+- Ray Traced Shadows 체크
+- Bloom 끄기
+- Motion Blur 끄기
+- Auto Exposure 끄기
+(끈 것들은 나중에 다시 킬 것, 실습 잘 보이기 위해 끈 것)
+
+---
+
+ Light Types
+<진짜 빛>
+- Directional Light
+- Spot Light
+- Point Light: 한 점에서 사방으로 뻗어나가는 light (예. 전구)
+- Rect Light
+<나머지>
+- Sky Light
+- Emissive material
+- HDRI backdrop
+
+---
+
+[실습]
+기존의 Light를 다 지워보고, Unlit로 보면 액터의 기존 base color를 보여줌
+조명을 잘 보기 위해서 Detail Lighting 모드 설정해보자
+
+- Point Light
+	- Intensity 100, Color, Attenuation Radius(빛이 어디까지 비치는지? 좁게 잡는 게 효율적임)
+	- 문제점!! 그림자가 너무 선명함. 그림자가 뭉개져야 하는데..? Source Radius를 설정하면 됨
+		전등은 빛이 표면에서 나오는데, 이거는 점에서 나가서 그런 것. 4로 바꿔보면? 그림자가 거리에 따라 뭉개짐
+
+- Spot Light
+	- Intensity, Attenuation Radius 등 
+	- Inner Cone Angle: 그 각도까지는 빛의 세기가 다 똑같고 나가면 Outer Cone Angle까지 빛의 세기가 줄어듦
+
+- Box Light
+	- 사진관의 사각형 조명
+	- Barn Door Angle: 조명의 날개?를 폈다가 접었다가, Length 등
+	- 빛이 면에서 나오기 때문에 그림자가 부드럽게 보임
+	- 사용 예시) LCD, 모니터 화면의 BackLight로 사용하기도 함
+
+- Directional Light
+	- 엄청나게 밝음
+	- 방향만 중요, 위치는 아무 상관 없음
+	- Intensity가 기본 10lux로 되어 있는데, 실제는 10만lux임!!
+	- Source Angle을 바꾸면 그림자의 부드럽기가 달라짐
+	- Use Temperature 변경하여 온도 색을 조절할 수 있음
+	- Cast Shadows를 키면 그림자 나오고, 끄면 안 나옴
+	  그림자는 연산량이 매우 많음 -> 최대한 그림자를 덜 그려야 함, 멀리 있으면 그림자를 없애도록 렌더링 최적화 
+	  -> LOD(Level Of Detail 최적화)
+	- Atmosphere 넣어야 파란 하늘이 나옴
+	- ctrl + l로 태양의 방향과 밝기 변경
+	- Source Angle 조절로 태양의 크기 변경
+
+<광원의 세기 - cd, lumen/ lux>
+- cd, lumen: 촛불 하나의 빛 -> 광원 자체의 밝기
+- lux: 태양에서 빛을 쐈을 때 1m*1m 면적에서 측정한 밝기 -> 피사체의 밝기
+
+<엔진의 Lumen>
+- Lumen 설정을 끄고 보면, Directional Light의 뒷 부분 그림자는 완전히 까매짐. 간접 계산을 하지 않고 직접 조명만 계산하기 때문!
+
+<Sky Light>
+- 이걸 배치해야 태양 빛을 받지 않는 어두운 부분이 자연스럽게 밝아짐
+- 태양이 다 저물어도 밝음.. 왜?? 액터는 사진을 찍고 보여주는 거임. 밝을 때 한 번 사진 찍고 계속 쓰기 때문에 어두워져도 밝아보이는 것.
+	-> Sky Light의 속성에 Real Time Capture를 체크해야 함. 그럼 캡처를 계속 하게 됨. 시간의 흐름에 따라서 조명이 안 바뀌면 끄기!
+
+- Emissive material <- 야광
+	- Sphere 배치, Material 생성 M_EmissiveLight로, 기본 설정 하고 Emissive 설정해주면 야광이 됨
+	- Emissive Color는 1,1,1 보다 크게 쓸 수 있음! 더 밝게 하려면 곱해주면 됨.
+	- 사용 예시) 네온 사인, 연등
+
+- HDRI Backdrop
+	- 플러그인에 HDRIBackdrop 사용 체크 후 에디터 재시작
+	- 다음 시간에..~
