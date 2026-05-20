@@ -1,0 +1,57 @@
+에셋 다운
+MollyHouse 다운 압축 해제 후, 언리얼 프로젝트에 Plugins 폴더를 만들고 MollyHose 전체 폴더를 넣어줌
+플러그인에서 MollyHouse 폴더 체크해줘야 폴더 나타남
+
+HDRI
+사진을 반구로 만들어줌
+끝 부분에는 왜곡되기 때문에, 가장자리 부분은 막아줘야 함
+
+에셋
+polyheaven 사이트
+마음에 드는 사진 2k HDRI 선택 후 다운 후 임포트
+사이즈 조정해줘야 함
+기존 에셋은 좁은 공간에서 찍은 것
+
+Porjection Center를 조정, 완전히 똑같이 만들 순 없음
+
+---
+
+ MollyHouseMap을 대낮처럼 만들기
+
+DirectionlaLight의 Intensity를 10만으로 변경
+그러면 너무 밝음
+카메라의 빛의 노출을 줄여줘야 함, 조리개를 조여줌
+-> 뷰포트 카메라의 노출값? Perspective - Exposure - GameSetting 끔, Ev 설정 15
+
+ctrl l로 태양 위치 변경
+
+skylight를 넣어서 대기와의 빛 충돌을 넣어주고, Real Time Capture 체크
+
+창문 안에 태양 빛이 들어오도록 설정, ctrl + 숫자 누르면 북마크에 기록됨, 카메라의 뷰포트를 찍어보자
+
+에디터의 bloom을 끄기
+
+안에서의 카메라 노출 값과 밖에서의 카메라 노출값을 다르게 만들어줘야 함
+-> Post Process Volume
+	여기에 카메라가 들어있으면, 카메라의 특성을 추가적으로 조정할 수 있음.
+	Infinite Extent 체크
+	Exposure - Min EV100, Max EV100 체크 후 3, 15로 설정 후 Perspective의 Exposure의 GameSetting 체크
+근데 적응 속도가 좀 느림 -> Speed Up, Down 
+
+어두운 곳에서 울렁거림. 빛이 부족해서 그런 것
+
+---
+
+대낮 레벨을 복제하고, NightMap을 만들기
+DirectionalLight를 Moon으로 설정하고 Intensity를 0.3 lux로 설정, Tempeture
+
+* PostProcess Volume Exposure Min Max 등 다 꺼야함!!!!!!!
+GameSetting도 끄고, Ev100 2로 변경
+
+SpotLight를 조명의 Intensity를 변경해야 함. 단위를 cd에서 lumen으로, 1000 lumen
+
+source radius를 조절해서 부드러운 그림자
+
+post process volume
+min max EV100을 2로 설정
+Auto Exposure는 어두운 상황일 때 의미가 없다!!! 안쪽에는 빛을 넣어주고, Expousre는 똑같이 설정하기
