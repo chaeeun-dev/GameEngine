@@ -1,0 +1,67 @@
+
+StartMoonLight 맵
+
+[별을 만들어 보자]
+천구 좌표계 이미지를 사용해보자
+
+Shpere를 월드에 배치하고, Scale을 크게 키움, Collision Preset을 No Collision으로 설정
+안쪽에는 material이 적용되지 않기 때문에, 안쪽에서 보이지 않음 -> normal을 안쪽으로 바꾸면 됨(근데 이 수업에선 안 할 것!!)
+
+Engine 폴더(안 보이면, 컨텐츠 드로어의 설정 바꿔야 함)에 SkySphere를 봐보자
+normal이 안쪽으로 되어 있음
+-> 근데, 사용하고자 하는 천구 좌표계와 uv 매핑이 맞지 않아서 사용할 수 없음..
+
+머테리얼을 직접 만들어 보자
+M_StarMoonNightSky 머테리얼을 생성
+Material의 Details 창에서 ShadingModel을 Default Lit -> Unlit으로 변경(빛을 받아서 상호작용 하는 게 아닌 것. 빛을 받지 않음!)
+빛을 받지 않기 때문에 Emissive Color 노드만 활성화 됨
+천구 이미지를 EmissiveColor에 연결
+안쪽에도 머테리얼이 입혀지기 위해, 머터리얼 설정에 Tow Sided 체크함
+구에 머테리얼을 입히면 됨
+
+근데, 이렇게 하면, atmosphere이 적용이 안 됨. 따라서 머테리얼 설정에 Is Sky를 체크
+
+별빛이 너무 세고, 너무 촘촘하다면? 값을 줄여줘야 함
+Texture Sample에 Multiply 0.2를 하면 됨
+
+---
+
+[달을 만들어 보자]
+달을 이미지로 넣는 건 안 됨. 위도와 경도를 바꿀 수 없음
+moon.jpg를 활용할 것
+
+M_StarMoonNightSky 머테리얼에 달 이미지를 가져옴.
+빈 곳 우클릭 후 Sky AtmosphereImage 가져옴. 텍스처를 Convert To TextureObject 후 연결
+Result를 Emissive Color에 연결, Scale을 0.05로 변경하면 빽뺵하게 여러 개 채워짐.
+이제 Mask와 Result를 Multiply 해주면 됨
+Direction에 SkyAtmosphereLightDirection을 연결
+ctrl L을 하여 이제 달의 위치를 변경할 수 있음
+
+달과 별을 합치려면, 노드와 노드를 Add해준 후 연결하기
+
+구름이나 안개를 배치하거나, 온도를 조절하여 연출 가능
+
+---
+
+[Post Processing]
+
+Bloom 효과
+PostProcessVolume을 선택한 후 Bloom 항목을 키고 Preferred Method와 intensity를 체크
+뽀샤시하게 잘 됨
+
+lens flared도 체크해보면, 빛번짐이 됨.
+
+Sun을 선택하고light shaft Bloom을 선택하여 조절
+
+Depth of field 배경 흐림 효과
+맵을 크게 하고 캐릭터를 여러 개 배치해봄
+FOV를 설정할 수 있음 Perspective Vie 누르고 설정 45도
+PostProcessVolume에 Dept of Field - Focal Distance를 150으로 설정하면, 1.5미터로 접근해야 선명해지고 나머지는 흐림
+F-Stop 값을 1.2로 설정하면 더 극대화됨
+인게임 상에서도 배경을 날려보자. 
+
+비네트 효과 Vignette -
+Post Process Volume에 Vignette Intensity를 높여주면, 가장자리로 갈수록 어두워짐
+
+컬러 그레이딩 Color Grading
+Global - Saturation 설정, Contrast 설정 
