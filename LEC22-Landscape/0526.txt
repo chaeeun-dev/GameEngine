@@ -1,0 +1,97 @@
+Landscape
+
+새 레벨을 만들고 Landscape 모드로 들어가서 Create
+
+*카메라 시점을 북마크 - ctrl 숫자
+
+항상 사이즈를 체크하자!
+바닥이 504x504임
+
+브러쉬 사이즈 조절, Falloff로 뾰족하게 조절 가능
+Tool Strength 키우면 빠르게 올라감
+
+erase
+flatten 클릭한 위치를 기준으로 평평하게 만들어줌
+
+산처럼 만들어보자
+산은 침식 과정을 거친 것. Erosion을 사용해서 다듬어보자
+
+평평한 바닥에 Noise를 추가
+
+---
+
+Landscape의 크기
+쿼드의 크기는 원래 1cm인데, scale 100을 해주기 때문에 1m임
+
+[임포트]
+16bit grayscale heightmap에서 청산도 하이트맵을 다운 받아서 엔진에서 사용해보자
+
+가장 높은 높이가 256, 가장 낮은 곳이 -256
+근데 height map은 -12부터 374까지임.
+고도 차이를 맞춰줘야 함! -> 386미터로
+커버하는 영역이 8*8km임
+
+100미터 : 512미터 = ? : 386미터
+사이트에서 공식을 알려줌.
+
+슬라이드 참고하여 크기 조정하면 됨
+
+-> 수동으로 작업하는 것보다 height map을 임포트해서 사용하는 게 좋다
+
+---
+
+[토비동산을 만들어보려면?]
+
+가장 중요한 것은 면적 파악하기
+네이버 맵으로 거리와 면적 확인할 수 있음
+
+---
+
+Material을 넣어보자
+Landscape 선택하여 Grass 넣기
+비율이 안 맞음. 바닥을 늘려놨으니 uv도 조정해야 함.
+
+Landscape Material Blending
+Landscape Material을 만들어보자
+M_Cheongsando
+Grass 텍스처를 Base Color에 연결, Metallic 0, Specular 0.5, Roughness 0.9,
+Normal에 노말 텍스처 연결
+타일링을 해보자 TexCoord 노드(u 누르고 클릭)15.78 확대했으니 똑같이 넣어줌
+이제 흙도 만들어보자
+Gravel 텍스처를 가져옴
+
+Landscape Layer Blend 노드를 추가하고 레이어를 2개 추가 후 텍스처와 노말을 다 연결함
+근데, 어떤 걸 선택할지 몰라서 검정으로 나옴
+
+Landscape 모드 -> Paint 모드
+Layer 추가. LayerInfo를 Weight Blend로 변경
+
+이건 안 돼서... 영상 다시 봐야할듯???
+
+---
+
+[잔디 심기]
+
+Foliage Mode로 변경, Drop Foliage에 Grass 넣기
+밀도를 빽빽하게 하려면 Density / 1Kuu를 100에서 늘려줌
+
+잔디는 하나의 액터로 취급됨 -> InstancedFoliageActor
+근데 이걸 어떻게 일일이 다 채우냐?? 
+자동으로 채울 수 있도록 머테리얼로 해보자
+Landscape Grass Output 노드 추가, Landscape Layer Sample 연결(이름을 Grass로 변경): 레벨에서 존재하는 영역을 찾아서 랜드스케이프 그래스로 보내는 것. 이제 그 영역을 채워야 함. Grass Type을 추가해야 함. Grass Type은 우클릭 -> Foliage -> Landscape Grass Type -> GT_Meadow 해서 인덱스 플러스, 메쉬 추가, Density를 100으로 변경, Start Cull Distance를 늘려보자(카메라가 알아서 컬링해주는 범위를 늘려줌)
+
+---
+
+나무도 심기
+GT_Meadow에 SM_AmurCork 추가, Density를 3, Alignto Surface를 꺼줌(경사에 따라)
+
+---
+
+[그림자]
+
+커맨드창에 r.raytracing,geometry.LandscapeGrass 1
+충돌 처리가 안 됨! <- 최적화를 위해서 꺼져 있음. 그래서 통과하지 않도록 알아서 설정해야 함.
+
+---
+
+이젠 PCG가 나오면서 그걸 더 많이 사용함. 이전에는 landscape를 사용했었다! 현재도 필요하긴 함.
