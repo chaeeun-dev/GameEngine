@@ -1,0 +1,80 @@
+통신: 객체를 함수로 호출
+
+Blueprint Communication
+
+통신 유형
+	- 직접 통신
+	- 이벤트 디스패처
+	- 블루프린트 인터페이스
+
+[직접 통신]
+Working Blueprint -> Target Blueprint
+
+실습
+
+1. RoomLight의 Visible을 해제
+캐릭터가 문 앞으로 가면 Room Light가 켜지도록 해보자
+
+Trigger Box를 두고, Blueprint로 만든 후, On Component Begin Overlap - Cast To Character - Toggle Visibility
+TargetLight 변수를 Light 형으로 만들고, 눈을 뜨게 하고, 바깥에서 Room Light 선택
+
+2. Point Light를 2개 더 넣어서 Visible을 꺼보자 -> 레퍼런스를 계속 추가? X 100개 이상이면 어쩔 것?? -> 컴포넌트를 만들자
+Actor Component 생성 SensingToggleComponent
+
+유튜브 구독처럼 해보자
+Sensor의 Event Dispatchers에 On Sensed 추가
+On Component Beegin Oberlap -> Call On Sensed <- 메시지를 방송한다
+Light가 구독을 해야 함
+RoomLight를 Blueprint로 만듦 SmartLight
+구독한다 = Bind한다
+SmartLight는 구독할 Sensor에 대한 레퍼런스 필요 -> 변수에 Sensor 추가 후 레벨에서 지정
+Event Beginplay -> Sensor를 가져오고,  Bind Event to On Sensed, Add Custom Event
+
+SmartLight를 여러 개 만들어도, 바인딩이 되기 때문에 다 켜짐
+
+Actor Component를 만들어서 Light에 추가하여 구독하도록 하기
+
+다형성 - 같은 함수를 호출하는데 자식들이 다른 기능을 함
+
+---
+
+플레이어와 충돌하면 몸에 붙이도록 해보자
+Blueprint Interface 생성 Stick 이름 생성
+
+Outputs에 OK 추가
+유모차에 이 Interface를 붙여보기
+
+유모차를 블루프린트로 만들고, Class Setting -> Interfaces -> Implemeneted Interfaces를 Stick으로 설정
+
+Absorb 함수 - Set Actor Enable Collision -> Return Node의 OK 체크
+
+Granny에서 캡슐 컴포넌트에 On Component Hit 이벤트 추가, Other Actor에 대해 Absorb, OK가 true라면, Attacth Actor To Component 해줌. StickPoint를 넣어주고(Arrow Component)
+
+모든 액터들 선택한 후 Replace Actor, Property 체크
+
+---
+
+이젠 떼어보자
+
+Stick Interface에 Release 함수 추가
+Release는 권한이 없기에, Output이 없음
+리턴 값이 없는 인터페이스 함수는 Event로 생성됨
+
+Granny에 R 입력이 들어오면 떼어지도록 해보자
+붙인 거에 대한 레퍼런스를 저장해야 함
+
+
+
+
+
+
+
+
+
+
+
+
+
+===
+
+피격 효과, move 패킷 send 수정, 카메라 문 뚫는 거 해결
