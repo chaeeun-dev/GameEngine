@@ -1,0 +1,72 @@
+UMG
+- UI 시스템
+
+개발 절차
+1. UI 필요 속성 결정
+2. 레이아웃 제작 - 표현 방식, 위치 결정
+3. 속성과 위젯 연결
+
+---
+
+1. Granny에 속성 추가 - hp, bulletCount
+2. UserWidget 상속받는 GrannyUI 생성
+	Canvas panel, Text 등 넣음
+3. Granny의 BeginPlay에서 CreateWidget - Set Granny UI, Add To Viewport
+	EventEndPlay에서 Granny UI를 Remove from Parent
+
+UI 바인딩
+- 함수 바인딩
+- 속성 바인딩
+- 이벤트 기반 바인딩
+
+1. 함수 바인딩
+WBP의 Desinger에서 Text에 Create Binding하면 Graph에 Get Text가 생성됨
+Return Node에 Granny의 Bullet Count를 연결해야 함.
+Granny 레퍼런스 변수를 두고, Instance Editable, Expose on spawn 체크
+
+2. 속성 바인딩
+HP를 바인딩 해보자.
+Granny가 이미 연결되어 있기 때문에 바로 연결해주면 됨.
+HP를 줄여보기 위해서, Pain Causing Volume을 월드에 추가, damage Per Sec 0.05, Pain Interval 0.2
+Granny에 Event Any Damage 노드 추가 후, HP에서 damage를 빼서 Set하기
+
+---
+
+좀비의 HP 바를 그려보자
+Skeletal Mesh Actor를 상속 받는 Zombie를 생성
+Zombie HP 위젯은 캔버스 판넬 필요 X <- 화면 전체를 덮을 필요가 없음
+Progress Bar를 넣고, 디자이너 패널에서 Fill Screen -> Desired on Scrren으로 변경(여기서 사이즈 변경할 필요 없음!)
+Zombie에서 Draw Size를 100, 10으로 설정
+
+위젯
+위젯은 기본적으로 3D인데,
+Screen으로 표시하면 뷰포트 위로 올라옴(겹쳐지는? 문제가 있는데 이런 게임 꽤 있어서 괜찮음)
+
+타이틀
+TitleUI - Start, Quit 버튼 만들기
+Title Level을 만들고, 레벨 블루프린트에서 편집
+Event BeginPlay에 Create Title UI - Add to Viewport
+
+입력 모드
+게임 컨트롤 및 UI 컨트롤의 사용 여부 제어
+Game and UI/ Game Only/ UI Only
+-> 타이틀은 UI Only로 설정(Get Player Contoller 가져와서), Show Mouse Cursor
+
+Title UI에서 Button의 Is variable을 체크해야 인터렉션 가능
+Start 버튼의 On Clicked에 Open Level 연결해주기
+Quit 버튼의 On Cliced에 Quit Game 연결
+MainPlay 맵 초기 설정 - 마우스 없애고, Input  mode를 game only로 설정
+
+ESC 단축키(에디터 상)
+Project Setting에서 Stop
+게임 실행할 때 Standalone Game을 누르면 패키징할 때처럼 나옴 여기선 ESC 키 누르면 안 나가짐
+레벨 블루프린트에서 ESC 입력을 받아서 Open Level - TitleMap
+
+UI 정리하기
+요소 여러 개 선택 후 Wrap ~ 하면 감쌀 수 있음, Size to Content 체크
+Anchor는 기준점임!
+오른쪽 상단에 hp bar를 넣어주려면? 앵커를 오른쪽 끝으로 설정하고, 피봇을 오른쪽 상단 점으로 설정(Alignment를 X 1 y 0로 설정)
+Progress bar 크기는 Size Box로 감싼 후에 horizontal box에 넣어주기
+
+폰트 바꿔보기
+C/Windows/Fonts
