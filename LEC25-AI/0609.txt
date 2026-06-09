@@ -1,0 +1,51 @@
+BT 만들기
+BP_ThirdPerson을 복붙해서 Guard로 변경
+입력 노드, 카메라 삭제
+
+BT 파일 만들고 GuradBT 이름 설정
+소리를 내고 대기하도록 해보자.
+Root - Sequence에 PlaySound, Wait 연결
+
+AIController를 부모로 하는 BP를 생성
+Possess되는 순간에 BT를 실행되도록 하기 위해,
+Event On Possess - Run Behavior Tree
+
+BP_Gurad의 Details에서 Pawn 검색, AIController Class 설정하기, Auto Possess AI - Placed in World or Spawned
+
+---
+
+이제 AI가 목적지를 따라가도록 해보자
+-> 정보를 줘야 함, BlackBoard!
+
+Blackboard 생성 후 GuradBB
+New Key - Vector, TargetLocation
+Default Value 체크 후 갈 위치 넣기
+
+Gurad(BT)와 BuradBB(BlackBoard)를 연결해야 함.
+BT에서 Root 노드에 GuradBB 넣기
+BlackBoard Key를 TargetLocation으로 설정
+
+Sequence에 Move To -> Play Sound -> Wait
+
+길찾기를 하기 위해 월드에 NavMeshBoundsVolume 넣기, p 키를 누르면 NavMesh가 초록색으로 생성됨. 이 부분이 길찾기할 수 있는 부분임
+
+시뮬레이션하면 잘 이동함
+
+---
+
+랜덤 위치로 이동하도록 해보자
+GuradBT에서 New Task 누르고, FindRandomLoaction으로 설정
+여기서 Event Receive Execute AI 노드 생성 - Get Random Location in Navigable Radius: Origin에는 Controlled Pawn - Get Actor Loacation - Branch - Set Blackboard Value as Vector에 Key를 promote
+
+BT에 FindRandomLoaction을 추가 후 Instance Editable ~ 설정
+Finish Execute에서 성공했을 땐 Success 체크, 실패했을 땐 해제
+
+---
+
+플레이어를 스토킹해보자
+BT에서 newTask - BTTask Base
+BlackBoard에 New Key - object로, 이름 TargetPlayer, Base class를 Pawn으로 설정
+
+FindPlayer에 Event Receive Execute AI - Set Blackboard Value as Object: key를 promote하고 이름 TargetPlayeKey로 변경, Get Player Pawn
+
+플레이어가 보이지 않는데도 따라오는 문제 -> Perception에 따라 쫓도록 -> 따로 영상 보기
